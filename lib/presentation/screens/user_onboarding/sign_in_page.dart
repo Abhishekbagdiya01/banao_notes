@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: ElevatedButton(
                   onPressed: () {
-                    BlocProvider.of<AuthCubit>(context).login(
+                    BlocProvider.of<AuthCubit>(context).logIn(
                         email: emailController.text,
                         password: passwordController.text);
                   },

@@ -31,7 +31,7 @@ class AuthRepository {
     return res;
   }
 
-  Future<String> loginUser(
+  Future<String> logInUser(
       {required String email, required String password}) async {
     String res = '';
     try {
@@ -41,6 +41,18 @@ class AuthRepository {
         print(value);
         res = "success";
       });
+    } on FirebaseAuthException catch (e) {
+      res = e.message.toString();
+    }
+
+    return res;
+  }
+
+  Future<String> logOutUser() async {
+    String res = "";
+    try {
+      await _auth.signOut();
+      res = "success";
     } on FirebaseAuthException catch (e) {
       res = e.message.toString();
     }

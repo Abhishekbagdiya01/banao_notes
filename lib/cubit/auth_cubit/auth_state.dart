@@ -9,6 +9,8 @@ class AuthUserCreatedState extends AuthState {}
 
 class AuthUserLoginState extends AuthState {}
 
+class AuthUserLogOutState extends AuthState {}
+
 class AuthErrorState extends AuthState {
   String errorMsg;
   AuthErrorState({required this.errorMsg});

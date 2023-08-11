@@ -30,13 +30,28 @@ class AuthCubit extends Cubit<AuthState> {
 
 //login cubit logic
 
-  Future login({required String email, required String password}) async {
+  Future logIn({required String email, required String password}) async {
     try {
       final response =
-          await AuthRepository().loginUser(email: email, password: password);
+          await AuthRepository().logInUser(email: email, password: password);
 
       if (response == "success") {
         emit(AuthUserLoginState());
+      } else {
+        emit(AuthErrorState(errorMsg: response));
+      }
+    } catch (e) {
+      print('error $e');
+      emit(AuthErrorState(errorMsg: e.toString()));
+    }
+  }
+
+  Future logOut() async {
+    try {
+      final response = await AuthRepository().logOutUser();
+
+      if (response == "success") {
+        emit(AuthUserLogOutState());
       } else {
         emit(AuthErrorState(errorMsg: response));
       }

@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:note_app/presentation/screens/home_page.dart';
 import 'package:note_app/presentation/screens/user_onboarding/sign_up_page.dart';
 import 'package:note_app/utils/const.dart';
 
@@ -13,15 +15,22 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  final currentUser = FirebaseAuth.instance.currentUser;
   void initState() {
     // TODO: implement initState
     super.initState();
     Timer(Duration(milliseconds: 300), () {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SignUpScreen(),
-          ));
+      currentUser != null
+          ? Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(),
+              ))
+          : Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignUpScreen(),
+              ));
     });
   }
 
