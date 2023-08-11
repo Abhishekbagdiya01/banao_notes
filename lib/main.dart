@@ -1,8 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:note_app/presentation/screens/user_onboarding/sign_up_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note_app/presentation/screens/user_onboarding/splash_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'cubit/auth_cubit/auth_cubit.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,12 +20,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: SignUpScreen());
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Colors.deepPurple.shade500),
+        useMaterial3: false,
+      ),
+      home: SplashScreen(),
+    );
   }
 }
