@@ -5,14 +5,11 @@ sealed class AuthState {}
 
 final class AuthInitial extends AuthState {}
 
-class AuthLoadedState extends AuthState {
-  UserModel userModel;
-  AuthLoadedState({required this.userModel});
-}
+class AuthUserCreatedState extends AuthState {}
+
+class AuthUserLoginState extends AuthState {}
 
 class AuthErrorState extends AuthState {
   String errorMsg;
   AuthErrorState({required this.errorMsg});
 }
-
-class AuthUserCreatedState extends AuthState {}

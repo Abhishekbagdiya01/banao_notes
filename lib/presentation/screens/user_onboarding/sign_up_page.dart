@@ -70,6 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               BlocListener<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthUserCreatedState) {
+                    snackbarMessenger(context, "Account created successfully");
                     Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -8,6 +8,7 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
+  // sign-in cubit logic
   Future signUp(
       {required String email,
       required String password,
@@ -18,6 +19,24 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (response == "success") {
         emit(AuthUserCreatedState());
+      } else {
+        emit(AuthErrorState(errorMsg: response));
+      }
+    } catch (e) {
+      print('error $e');
+      emit(AuthErrorState(errorMsg: e.toString()));
+    }
+  }
+
+//login cubit logic
+
+  Future login({required String email, required String password}) async {
+    try {
+      final response =
+          await AuthRepository().loginUser(email: email, password: password);
+
+      if (response == "success") {
+        emit(AuthUserLoginState());
       } else {
         emit(AuthErrorState(errorMsg: response));
       }
