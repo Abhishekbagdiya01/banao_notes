@@ -59,4 +59,12 @@ class AuthRepository {
 
     return res;
   }
+
+  Future<DocumentSnapshot> getUser() async {
+    DocumentSnapshot documentSnapshot = await _firestore
+        .collection("User")
+        .doc(_auth.currentUser!.email!)
+        .get();
+    return documentSnapshot;
+  }
 }

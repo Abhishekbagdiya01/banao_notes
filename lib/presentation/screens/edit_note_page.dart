@@ -6,16 +6,17 @@ import 'package:note_app/presentation/screens/home_page.dart';
 import 'package:note_app/presentation/widgets/snackbar.dart';
 
 class UpdateNoteScreen extends StatelessWidget {
-  UpdateNoteScreen({required this.noteModel, super.key});
+  UpdateNoteScreen({required this.noteModel, required this.color, super.key});
   NoteModel noteModel;
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  Color color;
   @override
   Widget build(BuildContext context) {
     titleController.text = noteModel.title!;
     descController.text = noteModel.desc!;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 246, 237, 200),
+      backgroundColor: color,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(10),

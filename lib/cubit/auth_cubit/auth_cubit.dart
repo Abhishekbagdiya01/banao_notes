@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:note_app/models/user_model.dart';
 import 'package:note_app/repository/user_auth_repository.dart';
+
+import '../../models/user_model.dart';
 
 part 'auth_state.dart';
 
@@ -59,5 +62,13 @@ class AuthCubit extends Cubit<AuthState> {
       print('error $e');
       emit(AuthErrorState(errorMsg: e.toString()));
     }
+  }
+
+  Future getUser() async {
+    emit(AuthUserLoadingState());
+    DocumentSnapshot documentSnapshot = await AuthRepository().getUser();
+    UserModel userModel =
+        UserModel.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+    emit(AuthUserLoadedState(userModel: userModel));
   }
 }

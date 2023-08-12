@@ -55,4 +55,25 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NoteErrorState(errorMsg: e.toString()));
     }
   }
+
+  Future deleteNote(String noteId) async {
+    try {
+      emit(NotesLoadingStates());
+      final response = await NoteRepository().deleteNote(noteId);
+      print("response : ${response}");
+      if (response == "success") {
+        List<NoteModel> arrNotes = [];
+        QuerySnapshot querySnapshot = await NoteRepository().fetchNotes();
+        querySnapshot.docs.forEach((doc) {
+          arrNotes.add(NoteModel.fromSnap(doc));
+
+          emit(NotesLoadedStates(arrNotes));
+        });
+      } else {
+        emit(NoteErrorState(errorMsg: response));
+      }
+    } catch (e) {
+      emit(NoteErrorState(errorMsg: e.toString()));
+    }
+  }
 }

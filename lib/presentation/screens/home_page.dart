@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<NoteCubit>(context).fetchNotes();
+    BlocProvider.of<AuthCubit>(context).getUser();
   }
 
   List<NoteModel> arrNotes = [];
@@ -47,13 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(fontSize: 21, color: whiteColor),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        "UserName",
-                        style:
-                            TextStyle(fontSize: 25, color: Colors.amberAccent),
-                      ),
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        if (state is AuthUserLoadingState) {
+                          return CircularProgressIndicator();
+                        } else if (state is AuthUserLoadedState) {
+                          return Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              state.userModel.name.toString(),
+                              style: TextStyle(
+                                  fontSize: 25, color: Colors.amberAccent),
+                            ),
+                          );
+                        } else if (state is AuthErrorState) {
+                          return Text(state.errorMsg);
+                        } else
+                          return SizedBox();
+                      },
                     )
                   ],
                 ),
@@ -84,7 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Container(
               padding: EdgeInsets.only(left: 10, right: 10),
-              color: Colors.white,
               height: MediaQuery.sizeOf(context).height * 0.8,
               child: BlocBuilder<NoteCubit, NoteState>(
                 builder: (context, state) {
@@ -105,13 +116,49 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewNoteScreen(noteModel: arrNotes[index]),
+                                builder: (context) => ViewNoteScreen(
+                                  noteModel: arrNotes[index],
+                                  color: index % 2 == 0
+                                      ? goldColor
+                                      : index % 3 == 0
+                                          ? greenColor
+                                          : blueColor,
+                                ),
                               ));
+                        },
+                        onDoubleTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(
+                                  "Are you sure you want to delete this note ?"),
+                              actions: [
+                                MaterialButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Cancel"),
+                                ),
+                                MaterialButton(
+                                  onPressed: () {
+                                    BlocProvider.of<NoteCubit>(context)
+                                        .deleteNote(
+                                            arrNotes[index].id.toString());
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Yes"),
+                                )
+                              ],
+                            ),
+                          );
                         },
                         child: Container(
                             decoration: BoxDecoration(
-                              color: goldColor,
+                              color: index % 2 == 0
+                                  ? goldColor
+                                  : index % 3 == 0
+                                      ? greenColor
+                                      : blueColor,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Padding(

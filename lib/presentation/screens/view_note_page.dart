@@ -6,12 +6,13 @@ import '../../models/note_model.dart';
 import 'home_page.dart';
 
 class ViewNoteScreen extends StatelessWidget {
-  ViewNoteScreen({required this.noteModel, super.key});
+  ViewNoteScreen({required this.noteModel, required this.color, super.key});
   NoteModel noteModel;
+  Color color;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: goldColor,
+      backgroundColor: color,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(10),
@@ -47,8 +48,8 @@ class ViewNoteScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            UpdateNoteScreen(noteModel: noteModel),
+                        builder: (context) => UpdateNoteScreen(
+                            noteModel: noteModel, color: color),
                       ));
                 },
                 child: Text(
@@ -66,9 +67,19 @@ class ViewNoteScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                noteModel.desc.toString(),
-                style: TextStyle(fontSize: 23, color: blackColor),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateNoteScreen(
+                            noteModel: noteModel, color: color),
+                      ));
+                },
+                child: Text(
+                  noteModel.desc.toString(),
+                  style: TextStyle(fontSize: 23, color: blackColor),
+                ),
               ),
               SizedBox(height: 10),
             ],
