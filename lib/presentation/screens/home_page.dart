@@ -32,173 +32,181 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: blackColor,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         "Greeting,",
                         style: TextStyle(fontSize: 21, color: whiteColor),
                       ),
-                    ),
-                    BlocBuilder<AuthCubit, AuthState>(
-                      builder: (context, state) {
-                        if (state is AuthUserLoadingState) {
-                          return CircularProgressIndicator();
-                        } else if (state is AuthUserLoadedState) {
-                          return Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Text(
+                      BlocBuilder<AuthCubit, AuthState>(
+                        builder: (context, state) {
+                          if (state is AuthUserLoadingState) {
+                            return CircularProgressIndicator();
+                          } else if (state is AuthUserLoadedState) {
+                            return Text(
                               state.userModel.name.toString(),
                               style: TextStyle(
                                   fontSize: 25, color: Colors.amberAccent),
-                            ),
-                          );
-                        } else if (state is AuthErrorState) {
-                          return Text(state.errorMsg);
-                        } else
-                          return SizedBox();
-                      },
-                    )
-                  ],
-                ),
-                BlocListener<AuthCubit, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthUserLogOutState) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignUpScreen(),
-                          ));
-                      snackbarMessenger(context,
-                          "You're now logged out. We're grateful for your time. Until we meet again!");
-                    } else if (state is AuthErrorState) {
-                      snackbarMessenger(context, state.errorMsg);
+                            );
+                          } else if (state is AuthErrorState) {
+                            return Text(state.errorMsg);
+                          } else
+                            return SizedBox();
+                        },
+                      )
+                    ],
+                  ),
+                  BlocListener<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthUserLogOutState) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUpScreen(),
+                            ));
+                        snackbarMessenger(context,
+                            "You're now logged out. We're grateful for your time. Until we meet again!");
+                      } else if (state is AuthErrorState) {
+                        snackbarMessenger(context, state.errorMsg);
+                      }
+                    },
+                    child: IconButton(
+                        onPressed: () {
+                          BlocProvider.of<AuthCubit>(context).logOut();
+                        },
+                        icon: Icon(
+                          Icons.logout,
+                          color: whiteColor,
+                        )),
+                  )
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                height: MediaQuery.sizeOf(context).height * 0.8,
+                child: BlocBuilder<NoteCubit, NoteState>(
+                  builder: (context, state) {
+                    if (state is NotesLoadingStates) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is NotesLoadedStates) {
+                      arrNotes = state.arrNotes;
+                      return arrNotes.isEmpty
+                          ? Center(
+                              child: Text(
+                              "No notes are there press  + icon to add notes",
+                              style: TextStyle(color: whiteColor, fontSize: 20),
+                            ))
+                          : MasonryGridView.builder(
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
+                              gridDelegate:
+                                  SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                              itemCount: arrNotes.length,
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ViewNoteScreen(
+                                          noteModel: arrNotes[index],
+                                          color: index % 2 == 0
+                                              ? goldColor
+                                              : index % 3 == 0
+                                                  ? greenColor
+                                                  : blueColor,
+                                        ),
+                                      ));
+                                },
+                                onDoubleTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(
+                                          "Are you sure you want to delete this note ?"),
+                                      actions: [
+                                        MaterialButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("Cancel"),
+                                        ),
+                                        MaterialButton(
+                                          onPressed: () {
+                                            BlocProvider.of<NoteCubit>(context)
+                                                .deleteNote(arrNotes[index]
+                                                    .id
+                                                    .toString());
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("Yes"),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      color: index % 2 == 0
+                                          ? goldColor
+                                          : index % 3 == 0
+                                              ? greenColor
+                                              : blueColor,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            arrNotes[index].title.toString(),
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            arrNotes[index].desc.toString(),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: blackColor
+                                                    .withOpacity(0.8)),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            " ${DateTime.parse(arrNotes[index].dateTime!).day.toString()}-${DateTime.parse(arrNotes[index].dateTime!).month.toString()}-${DateTime.parse(arrNotes[index].dateTime!).year.toString()} ",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                            );
+                    } else if (state is NoteErrorState) {
+                      return Center(child: Text(state.errorMsg));
+                    } else {
+                      return Center(child: CircularProgressIndicator());
                     }
                   },
-                  child: IconButton(
-                      onPressed: () {
-                        BlocProvider.of<AuthCubit>(context).logOut();
-                      },
-                      icon: Icon(
-                        Icons.logout,
-                        color: whiteColor,
-                      )),
-                )
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              height: MediaQuery.sizeOf(context).height * 0.8,
-              child: BlocBuilder<NoteCubit, NoteState>(
-                builder: (context, state) {
-                  if (state is NotesLoadingStates) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is NotesLoadedStates) {
-                    arrNotes = state.arrNotes;
-                    return MasonryGridView.builder(
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      gridDelegate:
-                          SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemCount: arrNotes.length,
-                      itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewNoteScreen(
-                                  noteModel: arrNotes[index],
-                                  color: index % 2 == 0
-                                      ? goldColor
-                                      : index % 3 == 0
-                                          ? greenColor
-                                          : blueColor,
-                                ),
-                              ));
-                        },
-                        onDoubleTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(
-                                  "Are you sure you want to delete this note ?"),
-                              actions: [
-                                MaterialButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Cancel"),
-                                ),
-                                MaterialButton(
-                                  onPressed: () {
-                                    BlocProvider.of<NoteCubit>(context)
-                                        .deleteNote(
-                                            arrNotes[index].id.toString());
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Yes"),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        child: Container(
-                            decoration: BoxDecoration(
-                              color: index % 2 == 0
-                                  ? goldColor
-                                  : index % 3 == 0
-                                      ? greenColor
-                                      : blueColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    arrNotes[index].title.toString(),
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    arrNotes[index].desc.toString(),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: blackColor.withOpacity(0.8)),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    " ${DateTime.parse(arrNotes[index].dateTime!).day.toString()}-${DateTime.parse(arrNotes[index].dateTime!).month.toString()}-${DateTime.parse(arrNotes[index].dateTime!).year.toString()} ",
-                                    style: TextStyle(color: Colors.grey),
-                                  )
-                                ],
-                              ),
-                            )),
-                      ),
-                    );
-                  } else if (state is NoteErrorState) {
-                    return Center(child: Text(state.errorMsg));
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-            )
-          ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

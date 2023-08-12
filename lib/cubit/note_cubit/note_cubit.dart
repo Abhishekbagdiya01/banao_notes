@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
@@ -30,12 +32,14 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NotesLoadingStates());
 
       List<NoteModel> arrNotes = [];
-      QuerySnapshot querySnapshot = await NoteRepository().fetchNotes();
+
+      QuerySnapshot? querySnapshot = await NoteRepository().fetchNotes();
+
       querySnapshot.docs.forEach((doc) {
         arrNotes.add(NoteModel.fromSnap(doc));
-
-        emit(NotesLoadedStates(arrNotes));
       });
+
+      emit(NotesLoadedStates(arrNotes));
     } catch (e) {
       emit(NoteErrorState(errorMsg: e.toString()));
     }
@@ -66,9 +70,8 @@ class NoteCubit extends Cubit<NoteState> {
         QuerySnapshot querySnapshot = await NoteRepository().fetchNotes();
         querySnapshot.docs.forEach((doc) {
           arrNotes.add(NoteModel.fromSnap(doc));
-
-          emit(NotesLoadedStates(arrNotes));
         });
+        emit(NotesLoadedStates(arrNotes));
       } else {
         emit(NoteErrorState(errorMsg: response));
       }
