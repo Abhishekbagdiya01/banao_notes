@@ -20,7 +20,7 @@ class AuthRepository {
           UserModel userModel =
               UserModel(id: _auth.currentUser!.uid, email: email, name: name);
 
-          _firestore.collection("User").doc(email).set(userModel.toJson());
+          _firestore.collection("Users").doc(email).set(userModel.toJson());
 
           res = "success";
         },
@@ -62,7 +62,7 @@ class AuthRepository {
 
   Future<DocumentSnapshot> getUser() async {
     DocumentSnapshot documentSnapshot = await _firestore
-        .collection("User")
+        .collection("Users")
         .doc(_auth.currentUser!.email!)
         .get();
     return documentSnapshot;

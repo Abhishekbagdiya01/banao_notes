@@ -120,13 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ViewNoteScreen(
-                                          noteModel: arrNotes[index],
-                                          color: index % 2 == 0
-                                              ? goldColor
-                                              : index % 3 == 0
-                                                  ? greenColor
-                                                  : blueColor,
-                                        ),
+                                            noteModel: arrNotes[index],
+                                            color: getColorByIndex(index)),
                                       ));
                                 },
                                 onDoubleTap: () {
@@ -158,11 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      color: index % 2 == 0
-                                          ? goldColor
-                                          : index % 3 == 0
-                                              ? greenColor
-                                              : blueColor,
+                                      color: getColorByIndex(index),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Padding(
@@ -189,8 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           Text(
                                             " ${DateTime.parse(arrNotes[index].dateTime!).day.toString()}-${DateTime.parse(arrNotes[index].dateTime!).month.toString()}-${DateTime.parse(arrNotes[index].dateTime!).year.toString()} ",
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                            style: TextStyle(color: blackColor),
                                           )
                                         ],
                                       ),
