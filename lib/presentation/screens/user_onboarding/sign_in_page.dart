@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 listener: (context, state) {
                   if (state is AuthUserLoginState) {
                     snackbarMessenger(context, "Login success");
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => HomeScreen(),

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note_app/cubit/note_cubit/note_cubit.dart';
 import 'package:note_app/presentation/screens/user_onboarding/splash_screen.dart';
 
 import 'cubit/auth_cubit/auth_cubit.dart';
@@ -11,6 +12,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiBlocProvider(providers: [
     BlocProvider<AuthCubit>(create: (context) => AuthCubit()),
+    BlocProvider<NoteCubit>(create: (context) => NoteCubit())
   ], child: MyApp()));
 }
 

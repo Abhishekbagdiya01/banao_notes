@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 listener: (context, state) {
                   if (state is AuthUserCreatedState) {
                     snackbarMessenger(context, "Account created successfully");
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => HomeScreen(),
