@@ -14,6 +14,8 @@ class NotesLoadedStates extends NoteState {
 
 class NoteAddedState extends NoteState {}
 
+class NoteUpdateState extends NoteState {}
+
 class NoteErrorState extends NoteState {
   String errorMsg;
   NoteErrorState({required this.errorMsg});

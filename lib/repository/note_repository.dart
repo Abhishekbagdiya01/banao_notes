@@ -32,4 +32,52 @@ class NoteRepository {
 
     return res;
   }
+
+  Future<String> updateNote(NoteModel noteModel) async {
+    String res = "";
+    final email = await _auth.currentUser!.email;
+
+    try {
+      await _firestore
+          .collection(email!)
+          .doc(noteModel.id)
+          .set(NoteModel(
+                  id: noteModel.id,
+                  title: noteModel.title,
+                  desc: noteModel.desc,
+                  dateTime: noteModel.dateTime)
+              .toJson())
+          .then((value) {
+        res = "success";
+        print("res : " + res);
+      });
+    } catch (e) {
+      res = e.toString();
+    }
+
+    return res;
+  }
+
+  Future<String> deleteNote(String noteId) async {
+    String res = "";
+    final email = await _auth.currentUser!.email;
+
+    try {
+      await _firestore.collection(email!).doc(noteId).delete().then((value) {
+        res = "success";
+        print("res : " + res);
+      });
+    } catch (e) {
+      res = e.toString();
+    }
+
+    return res;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchNotes() async {
+    final email = await _auth.currentUser!.email;
+    var NotesArr = await _firestore.collection(email!).get();
+
+    return NotesArr;
+  }
 }

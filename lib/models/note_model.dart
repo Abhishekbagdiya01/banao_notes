@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NoteModel {
   String? id;
   String? title;
@@ -6,12 +8,13 @@ class NoteModel {
 
   NoteModel({this.id, this.title, this.desc, this.dateTime});
 
-  factory NoteModel.fromJson(Map<String, dynamic> map) {
+  static fromSnap(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return NoteModel(
-        id: map['id'],
-        title: map['title'],
-        desc: map['desc'],
-        dateTime: map['dateTime']);
+        id: data['id'],
+        title: data['title'],
+        desc: data['desc'],
+        dateTime: data['dateTime']);
   }
 
   Map<String, dynamic> toJson() {
